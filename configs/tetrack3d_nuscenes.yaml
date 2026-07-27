@@ -1,0 +1,96 @@
+dataset:
+  name: nuscenes
+  root: /path/to/nuScenes
+  category: All
+  coordinate_mode: lidar
+  sequence_length: 8
+  max_frame_distance: 1
+  num_points: 1024
+  frame_offset: 2.0
+  frame_offset2: 0.0
+  frame_scale: 1.0
+  target_scale: 1.25
+  target_offset: 0.0
+  offset_max: [3.0, 10.0, 10.0]
+  up_axis: [0, 0, 1]
+  degree: true
+  use_smp_aug: true
+  use_seq_aug: false
+  dynamic_threshold: 0.15
+  tracklet_length_lb: 8
+  test_version: v1.0-trainval
+  train:
+    cache: true
+    preload_offset: 10
+    use_z: true
+  test:
+    cache: false
+    preload_offset: -1
+    use_z: true
+
+model:
+  # Required for fresh training; replace with your local RECON checkpoint.
+  pretrained_backbone: /path/to/modelnet8k_94_28.pth
+  backbone:
+    feature_dim: 384
+    depth: 12
+    num_heads: 6
+    num_groups: 128
+    group_size: 32
+    dropout: 0.0
+    drop_path_rate: 0.1
+    use_history: true
+    history_length: 4
+    fixed_history: 1
+  localization:
+    feat_dim: 128
+    n_smp_x: 3
+    n_smp_y: 3
+    n_smp_z: 5
+    n_proposals: 64
+    sample_method: shrink
+    edge_aggr:
+      pre_mlps: [129, 128, 128]
+      mlps: [128, 128, 128]
+      use_xyz: true
+      nsample: 8
+  state_evolution:
+    enabled: true
+    num_tokens: 2
+    history_length: 3
+    depth: 2
+    dropout: 0.1
+    d_state: 16
+    conv_kernel: 4
+    expand: 2
+
+tracking:
+  missing_threshold: 0.2
+
+loss:
+  mask: 0.2
+  center_objectness: 1.0
+  box_objectness: 1.0
+  center: 10.0
+  box: 1.0
+  state_evolution: 0.2
+  temporal_alignment: 0.2
+
+optimization:
+  learning_rate: 1.0e-4
+  minimum_learning_rate: 1.0e-6
+  weight_decay: 0.01
+  betas: [0.7, 0.999]
+  eps: 1.0e-6
+
+training:
+  epochs: 60
+  batch_size: 32
+  num_workers: 16
+  validation_interval: 1
+  gradient_clip: 1.0
+
+evaluation:
+  batch_size: 1
+  num_workers: 16
+  iou_space: 3
