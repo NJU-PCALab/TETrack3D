@@ -161,19 +161,24 @@ class TETrack3DTrainingModule(pl.LightningModule):
             observed_state = self.model.compress_state(
                 current_tokens, encoded["search_centers"]
             )
+            target_state = observed_state.detach()
             if predicted_next_state is not None:
                 totals["state"] += state_evolution_loss(
-                    predicted_next_state, observed_state
+                    predicted_next_state, target_state
                 )
                 state_pairs += 1
-            state_history.append(observed_state)
             max_history = int(self.config.model.state_evolution.history_length)
+            if frame_index < point_clouds.shape[1] - 1:
+                # Keep only the current source state connected to this prediction.
+                prediction_history = state_history + [observed_state]
+                if max_history > 0:
+                    prediction_history = prediction_history[-max_history:]
+                predicted_next_state = self.model.predict_next_state(
+                    torch.stack(prediction_history, dim=1)
+                )
+            state_history.append(target_state)
             if max_history > 0:
                 state_history = state_history[-max_history:]
-            if frame_index < point_clouds.shape[1] - 1:
-                predicted_next_state = self.model.predict_next_state(
-                    torch.stack(state_history, dim=1)
-                )
 
             localized = self.model.localize(
                 features=encoded["features"],
