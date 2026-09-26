@@ -1,10 +1,13 @@
 # TETrack3D: State Evolution Awareness for Category-agnostic 3D Point Cloud Tracking
 
-_Official PyTorch implementation · NeurIPS 2026_
+## Introduction
 
----
+TETrack3D is a category-agnostic framework for 3D single-object tracking. It maintains temporal key-value caches in the backbone to preserve target information across frames and explicitly models how target states evolve over time. During training, state evolution supervision learns temporal state transitions, while temporal distribution alignment encourages consistent feature distributions across adjacent frames. These training-only objectives strengthen temporal modeling without adding the corresponding supervision modules to inference. We evaluate TETrack3D on KITTI, nuScenes, and Waymo under category-agnostic and cross-dataset settings.
 
-This repository contains the training and evaluation code for **TETrack3D**, the method introduced in _State Evolution Awareness for Category-agnostic 3D Point Cloud Tracking_ (NeurIPS 2026). The code supports category-agnostic training and evaluation on KITTI and nuScenes, as well as direct KITTI-to-Waymo evaluation.
+![TETrack3D framework overview](assets/structure.png)
+_Figure 1: Overview of TETrack3D, including temporal key-value caching, temporal distribution alignment, and state evolution supervision._
+
+Please refer to the [Paper]() for more details.
 
 ## 📋 Repository structure
 
