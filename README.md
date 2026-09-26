@@ -9,23 +9,6 @@ _Figure 1: Overview of TETrack3D, including temporal key-value caching, temporal
 
 Please refer to the [Paper]() for more details.
 
-## 📋 Repository structure
-
-```text
-.
-├── configs/          # KITTI, nuScenes, and Waymo experiment configurations
-├── datasets/         # Dataset adapters and point-cloud preprocessing
-├── models/           # RECON backbone, localization head, and state evolution
-├── training/         # Losses and PyTorch Lightning training module
-├── utils/            # Configuration, logging, metrics, and checkpoint utilities
-├── weights/          # Released TETrack3D checkpoints
-├── environment.yml   # Reproducible Conda environment
-├── train.py          # Training entry point
-└── test.py           # Evaluation entry point
-```
-
-Datasets and the pretrained RECON initialization weights are not included. Configure their paths before training or evaluation.
-
 ## 🔧 Environment setup
 
 Create the Conda environment from the provided [`environment.yml`](environment.yml). This is the required environment specification for this repository; no separate `pip install` step is needed.
@@ -107,62 +90,28 @@ Fresh training additionally requires a pretrained RECON encoder. Set `model.pret
 
 ## 📊 Evaluation
 
-Run all commands from the repository root after activating the Conda environment.
-
-### KITTI
+Run the following command from the repository root after activating the Conda environment. Replace `<dataset>` with `kitti`, `nuscenes`, or `waymo`, and set the corresponding dataset root.
 
 ```bash
-python test.py configs/tetrack3d_kitti.yaml \
-  --data-root /path/to/KITTI/training \
-  --checkpoint weights/tetrack3d_kitti.ckpt \
+python test.py configs/tetrack3d_<dataset>.yaml \
+  --data-root /path/to/<dataset> \
+  --checkpoint weights/tetrack3d_<dataset>.ckpt \
   --device cuda:0 \
-  --output-dir outputs/kitti_test
-```
-
-### nuScenes
-
-```bash
-python test.py configs/tetrack3d_nuscenes.yaml \
-  --data-root /path/to/nuScenes \
-  --checkpoint weights/tetrack3d_nuscenes.ckpt \
-  --device cuda:0 \
-  --output-dir outputs/nuscenes_test
-```
-
-### Waymo
-
-```bash
-python test.py configs/tetrack3d_waymo.yaml \
-  --data-root /path/to/Waymo \
-  --checkpoint weights/tetrack3d_waymo.ckpt \
-  --device cuda:0 \
-  --output-dir outputs/waymo_test
+  --output-dir outputs/<dataset>_test
 ```
 
 Evaluation writes the aggregate metrics to `test_summary.json` and the run metadata to `evaluation.json`. Add `--save-predictions` to export predicted boxes. For a quick pipeline check, add `--debug --max-tracklets 2`.
 
 ## ⚙️ Training
 
-Training is supported on KITTI and nuScenes. A fresh run must initialize the backbone from a pretrained RECON checkpoint.
-
-### KITTI
+Training is supported on KITTI and nuScenes. Replace `<dataset>` with `kitti` or `nuscenes`. A fresh run must initialize the backbone from a pretrained RECON checkpoint.
 
 ```bash
-python train.py configs/tetrack3d_kitti.yaml \
-  --data-root /path/to/KITTI/training \
+python train.py configs/tetrack3d_<dataset>.yaml \
+  --data-root /path/to/<dataset> \
   --pretrained-backbone /path/to/modelnet8k_94_28.pth \
   --devices 0,1,2,3 \
-  --output-dir outputs/kitti_train
-```
-
-### nuScenes
-
-```bash
-python train.py configs/tetrack3d_nuscenes.yaml \
-  --data-root /path/to/nuScenes \
-  --pretrained-backbone /path/to/modelnet8k_94_28.pth \
-  --devices 0,1,2,3 \
-  --output-dir outputs/nuscenes_train
+  --output-dir outputs/<dataset>_train
 ```
 
 The command-line `--pretrained-backbone` value overrides `model.pretrained_backbone` in the YAML configuration. It initializes only the RECON backbone, not the localization or state-evolution modules.
@@ -170,11 +119,11 @@ The command-line `--pretrained-backbone` value overrides `model.pretrained_backb
 Resume an interrupted run with:
 
 ```bash
-python train.py configs/tetrack3d_kitti.yaml \
-  --data-root /path/to/KITTI/training \
+python train.py configs/tetrack3d_<dataset>.yaml \
+  --data-root /path/to/<dataset> \
   --resume /path/to/last.ckpt \
   --devices 0,1,2,3 \
-  --output-dir outputs/kitti_train
+  --output-dir outputs/<dataset>_train
 ```
 
 Add `--debug` to limit training and validation to two batches for a quick wiring check.
