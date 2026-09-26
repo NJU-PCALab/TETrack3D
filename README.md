@@ -176,6 +176,7 @@ python train.py configs/tetrack3d_kitti.yaml \
 
 Add `--debug` to limit training and validation to two batches for a quick wiring check.
 
+<!--
 ## 📚 Citation
 
 If this repository is useful for your research, please cite the NeurIPS 2026 paper:
@@ -186,3 +187,4 @@ Advances in Neural Information Processing Systems (NeurIPS), 2026.
 ```
 
 The complete BibTeX entry will be added with the public paper metadata.
+-->
