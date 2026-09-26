@@ -85,7 +85,7 @@ Download the released TETrack3D checkpoints from [Google Drive](https://drive.go
 
 The Waymo checkpoint contains the same model weights as the KITTI checkpoint because the Waymo experiment uses direct cross-dataset evaluation.
 
-Fresh training additionally requires a pretrained RECON encoder. Set `model.pretrained_backbone` in the selected configuration or pass its path with `--pretrained-backbone`.
+Fresh training additionally requires the pretrained RECON encoder [`base_model.pth`](https://drive.google.com/file/d/1zEc9w5AdeiW55yWVUC4zuEQ2tu0xtJfA/view?usp=drive_link). Download the file, then set its local path through `model.pretrained_backbone` in the selected configuration or the `--pretrained-backbone` option.
 
 ## 📊 Evaluation
 
@@ -108,7 +108,7 @@ Training is supported on KITTI and nuScenes. Replace `<dataset>` with `kitti` or
 ```bash
 python train.py configs/tetrack3d_<dataset>.yaml \
   --data-root /path/to/<dataset> \
-  --pretrained-backbone /path/to/modelnet8k_94_28.pth \
+  --pretrained-backbone /path/to/base_model.pth \
   --devices 0,1,2,3 \
   --output-dir outputs/<dataset>_train
 ```

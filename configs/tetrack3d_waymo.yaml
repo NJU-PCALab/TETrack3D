@@ -28,7 +28,7 @@ dataset:
 
 model:
   # Required for fresh training; replace with your local RECON checkpoint.
-  pretrained_backbone: /path/to/modelnet8k_94_28.pth
+  pretrained_backbone: /path/to/base_model.pth
   backbone:
     feature_dim: 384
     depth: 12
